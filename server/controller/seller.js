@@ -79,6 +79,22 @@ exports.AddProducts = (req,res)=>{
        })
 }
 
+exports.DeleteProducts = (req,res)=>{
+    console.log(req.body)
+    Seller.updateOne(
+        { _id: req.params.id },
+        { $pull: { Products: {
+          _id : req.body.id,
+        }} }
+       ).then((data)=>{
+            console.log('Success')
+            res.send(data)
+       }).catch(e=>{
+           console.log(e)
+       })
+}
+
+
 exports.UpdateSetting = (req,res) =>{
     console.log(req.params.id, req.body)
     Seller.updateOne({_id : req.params.id},{WebsiteData : req.body.WebsiteData}).then((data)=>{
@@ -163,6 +179,26 @@ exports.CreatePromoCode = (req, res) => {
             res.send(data)
        })
   };
+
+exports.DeletePromo = (req,res) =>{
+    Seller.updateOne(
+        { _id: req.params.id },
+        { $pull: { PromoCode: {
+          _id : req.body.id
+         
+        }} }
+       ).then((data)=>{
+            console.log('Success')
+            res.send(data)
+       })
+}  
+
+exports.DeleteSeller = (req,res) =>{
+    Seller.deleteOne({_id:req.params.id}).then((data)=>{
+        console.log('Success')
+        res.send(data)
+   })
+}
 
 exports.GetPromoCode = (req,res) =>{
     Seller.findOne({_id : req.params.id}).then((data)=>{

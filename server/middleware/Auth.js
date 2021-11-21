@@ -4,6 +4,7 @@ const passport = require("passport");
 const Customer = require("../model/customer");
 const Seller = require("../model/seller");
 const { SECRET } = require("../config");
+const { addExecutive } = require("../controller/executive");
 
 /**
  * @DESC To register the user (ADMIN, SUPER_ADMIN, USER)
@@ -65,15 +66,20 @@ const userRegister = async (req, res, next) => {
  * @DESC To Login the user (ADMIN, SUPER_ADMIN, USER)
  */
 const userLogin = async (req,res) => {
+
   let role = req.params.role
-  let { username, password } = req.body;
+  console.log(role)
+  let { Username, Password } = req.body;
   let user;
   if(role==='Seller') {
-     user = await Seller.findOne({ AdminUserName : username });
+     user = await Seller.findOne({ Username : Username, "WebsiteData.Domain" : req.body.Domain});
   }
   else if(role==='Customer') {
-     user = await Customer.findOne({ AdminUserName : username });
+     user = await Customer.findOne({ Username : Username });
   }
+  else if(role==='Executive') {
+    user = await Executive.findOne({ Username : Username });
+ }
   else {
     return;
   }
@@ -85,22 +91,22 @@ const userLogin = async (req,res) => {
     });
   }
  
-  let isMatch = await bcrypt.compare(password, user.Password);
+  let isMatch = await bcrypt.compare(Password, user.Password);
   if (isMatch) {
     // Sign in the token and issue it to the user
 
     let token = jwt.sign(
       {
         user_id: user._id,
-        username: user.AdminUserName,
-        email: user.PersonalDetails.Email
+        Username: user.Username,
+        Email: user.PersonalDetails.Email
       },
       process.env.SECRET,
       { expiresIn: "7 days" }
     );
 
     let result = {
-      username: user.AdminUserName,
+      username: user.Username,
       email: user.PersonalDetails.Email,
       token: `Bearer ${token}`,
       expiresIn: 168
@@ -128,6 +134,14 @@ const validateUsername = async (username,params) => {
     let user = await Customer.findOne({ Username : username });
     return user ? false : true;
   }
+  else if(params==='Admin'){
+    let user = await Customer.findOne({ Username : username });
+    return user ? false : true;
+  }
+  else if(params==='Executive'){
+    let user = await Executive.findOne({ Username : username });
+    return user ? false : true;
+  }
   else{
     return false;
   }
@@ -136,8 +150,11 @@ const validateUsername = async (username,params) => {
 /**
  * @DESC Passport middleware
  */
-const AuthC = passport.authenticate('Customer','jwt', { session: false });
-const AuthS = passport.authenticate('Seller','jwt', { session: false });
+const AuthC = passport.authenticate('Customer', { session: false });
+const AuthS = passport.authenticate('Seller',{session:false});
+const AuthA = passport.authenticate('Admin',{session:false});
+const AuthE = passport.authenticate('Executive',{session:false});
+
 
 /**
  * @DESC Check Role Middleware
