@@ -29,4 +29,5 @@ route.get("/api/getFullProduct/:id/:pid",seller.Fprod,products.Fprod); //Gets Co
 route.get("/api/GetPromoCode/:id",seller.GetPromoCode); //Fetched all Promocodes for a single Seller
 route.put("/api/checkpromo/:id",seller.CheckPromo); //Validates PromoCode & Calculates Discount
 route.get("/api/getAllProducts/:id/",seller.GetProductsAll); //All Products of a Single Seller with Name and Photo Included
+route.post("/api/createExecutive",executive.createExecutive);
 module.exports = route;

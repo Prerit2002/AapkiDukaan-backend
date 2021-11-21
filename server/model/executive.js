@@ -9,26 +9,26 @@ const personalDetails = new mongoose.Schema({
         type:String,
         required:true
     },
-    Age:{
-        type:Number,
-        required:true
-    },
+   
     Occupation: {
         type:String,
         required:true
     },
-    Identity: {
-        type:String,
+    AadharNo: {
+        type:Number,
         required:true
     },
-    Gender: {
-        type:String,
+    PhoneNo: {
+        type:Number,
         required:true
     },
-    DOJ: {
-        type:Date,
+    Email: {
+        type:String,
         required:true
     }
+
+   
+   
 })
 
 const Leads = new mongoose.Schema({
@@ -79,10 +79,7 @@ const ExecutiveSchema = new mongoose.Schema({
         required: true
     },
   
-    Email : {
-        type: String,
-        required: true
-    },
+  
 
 },{
     collection : 'Executives'

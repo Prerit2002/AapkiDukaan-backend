@@ -103,14 +103,14 @@ exports.GetProducts = (req,res) =>{
         res.status(500).send(e)
     })
 }
-
+const ELprod = async (v) => Products.findOne({_id : v._id}).then((data)=>{
+    return data
+})
   exports.GetProductsAll = async (req,res) =>{
     const SellerProds = async () => Seller.findOne({_id : req.params.id}).then((data)=>{
             return data.Products
         })
-    const ELprod = async (v) => Products.findOne({_id : v._id}).then((data)=>{
-        return data
-    })
+  
     let Arr = await SellerProds()
     let Arr2=[];
     for(let i=0; i<Arr.length; i++) {
@@ -123,14 +123,25 @@ exports.GetProducts = (req,res) =>{
     }
     res.send(Arr2)
   }
-exports.GetProductsbyCategory = (req,res) =>{
+exports.GetProductsbyCategory = async (req,res) =>{
     console.log(req.body)
-    Seller.findById(req.params.id).then((data)=>{
+    Seller.findById(req.params.id).then(async (data)=>{
          data = data.Products.filter((el)=>{
             return (el.Category===req.body.Category)
         })
         if(data.length>0) {
-          res.send(data)
+            let Arr2=[];
+            for(let i=0; i<data.length; i++) {
+                let v = await ELprod(data[i]._id)
+                data[i]["Name"] = v.Name
+                data[i]["Photo"] = v.Photo
+                const returnedTarget = Object.assign(v,data[i]);
+                console.log(returnedTarget)
+                data[i] = returnedTarget
+                Arr2.push(returnedTarget)
+            }
+          res.send(Arr2)
+
         }
         else {
             res.status(404).send('Not Found')   
