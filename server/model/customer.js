@@ -56,10 +56,6 @@ const CustomerSchema = new Mongoose.Schema({
         type: String,
         required: true
     },
-    Email : {
-        type: String,
-        required: true
-    },
     PhoneNo : {
         type: Number,
         required: true

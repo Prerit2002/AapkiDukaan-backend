@@ -6,31 +6,34 @@ const products = require("../controller/products");
 const customer = require("../controller/customer");
 const executive = require("../controller/executive");
 const Auth = require("../middleware/Auth");
+const Admin = require("../controller/admin");
 
-// route.get("/api/test",Auth.AuthS,seller.Check); 
+// route.get("/api/test",Auth.Auth,seller.Check); 
 route.put("/api/findSellerbyDomain",seller.findSellerbyDomain); //MAIN API 
-route.post("/api/createProduct",Auth.AuthS,products.createProduct); //Create Product in Product Pool
-route.put("/api/CreatePromoCode/:id",Auth.AuthS,seller.CreatePromoCode); //Creates promocode for a seller
+route.post("/api/createProduct",Auth.Auth,Auth.AuthS,products.createProduct); //Create Product in Product Pool
+route.put("/api/CreatePromoCode/:id",Auth.Auth,Auth.AuthS,seller.CreatePromoCode); //Creates promocode for a seller
 route.post("/api/create/Seller", Auth.userRegister, seller.createSeller); // Creates User
 route.post("/api/create/Customer", Auth.userRegister, customer.createCustomer); //Creates Seller
+route.post("/api/create/Admin",Auth.userRegister,Admin.newAdmin);
+route.post("/api/create/Executive",Auth.userRegister,executive.createExecutive);
 route.post("/api/loginUser/:role",Auth.userLogin); //Login API for DB
-route.get("/api/test",Auth.AuthC,seller.Check); //Checks AUTH for Customer
-route.get("/api/test2",Auth.AuthS,customer.Check); //Checks AUTH for Seller
-route.put("/api/createProduct",Auth.AuthS ,products.createProduct,seller.AddProducts); //Add Product to a single Seller & Product Pool
+route.put("/api/createProduct",Auth.Auth,Auth.AuthS ,products.createProduct,seller.AddProducts); //Add Product to a single Seller & Product Pool
 route.get("/api/findSellerProducts/:id",seller.GetProducts); // Gets All products a Seller Sells
 route.put("/api/findProductsbyCategory/:id",seller.GetProductsbyCategory); //Finds all products in Seller's Category
-route.get("/api/findProduct/:id",products.GetProducts); //Finds a purticular Product from Product Pool
-route.put("/api/addProduct",Auth.AuthS,seller.AddProducts); //Add Products for a single Seller
-route.put("/api/updateWebsite/:id",Auth.AuthS ,seller.UpdateSetting); //Updates Website Settings of Seller's Website
-route.get("/api/showCustomer",Auth.AuthC,customer.ShowCustomer); //Fetches All Customers Registered
-route.get("/api/showClient",Auth.AuthC,seller.ShowClient); //Fetches All registered Sellers
-route.get("/api/showProduct",products.ShowProducts); //All Products Pool
+route.get("/api/findProduct/:id",Auth.Auth,Auth.AuthA,products.GetProducts); //Finds a purticular Product from Product Pool
+route.put("/api/addProduct",Auth.Auth,Auth.AuthS,seller.AddProducts); //Add Products for a single Seller
+route.put("/api/updateWebsite/:id",Auth.Auth,Auth.AuthS,seller.UpdateSetting); //Updates Website Settings of Seller's Website
+route.get("/api/showCustomer",Auth.Auth,Auth.AuthA,customer.ShowCustomer); //Fetches All Customers Registered
+route.get("/api/getCustomerbyToken",Auth.Auth,Auth.AuthC,customer.GetCustomerbyId); //Fetches Single Customer Data to him
+route.get("/api/showClient",Auth.Auth,Auth.AuthA,seller.ShowClient); //Fetches All registered Sellers
+route.get("/api/showProduct",Auth.Auth,Auth.AuthA,products.ShowProducts); //All Products Pool
 route.get("/api/getFullProduct/:id/:pid",seller.Fprod,products.Fprod); //Gets Complete Data for a Seller's Product
-route.get("/api/GetPromoCode/:id",Auth.AuthS,seller.GetPromoCode); //Fetched all Promocodes for a single Seller
+route.get("/api/GetPromoCode/:id",Auth.Auth,Auth.AuthS,seller.GetPromoCode); //Fetched all Promocodes for a single Seller
 route.put("/api/checkpromo/:id",seller.CheckPromo); //Validates PromoCode & Calculates Discount
 route.get("/api/getAllProducts/:id/",seller.GetProductsAll); //All Products of a Single Seller with Name and Photo Included
-route.put("/api/DeletePromo/:id",Auth.AuthS,seller.DeletePromo);//Deletes Promo Codes
-route.put("/api/DeleteProducts/:id",Auth.AuthS,seller.DeleteProducts);//Deletes Products 
-route.delete("/api/DeleteSeller/:id",Auth.AuthC,seller.DeleteSeller);//Deletes seller 
-route.post("/api/createExecutive",executive.createExecutive);
+route.put("/api/DeletePromo/:id",Auth.Auth,Auth.AuthS,seller.DeletePromo);//Deletes Promo Codes
+route.put("/api/DeleteProducts/:id",Auth.Auth,Auth.AuthS,seller.DeleteProducts);//Deletes Products 
+route.delete("/api/DeleteSeller/:id",Auth.Auth,Auth.AuthA,seller.DeleteSeller);//Deletes seller 
+route.put("/api/ChangePassword/:role/:id",Auth.ChangePassword);//Changes Password
+
 module.exports = route;

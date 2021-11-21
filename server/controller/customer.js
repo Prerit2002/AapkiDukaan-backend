@@ -16,7 +16,6 @@ exports.createCustomer = async  (req,res) => {
          FirstName : req.body.FirstName,
          LastName : req.body.LastName,
          Username : req.body.Username,
-           Email : req.body.Email,
            PhoneNo : req.body.PhoneNo,
            Address : Address,
            Password : req.body.Password
@@ -29,12 +28,13 @@ exports.createCustomer = async  (req,res) => {
        res.status(500).send(err)
    }
 }
-exports.Check = async(req,res) => {
-  res.send({message : "All Good"})
-}
-
 exports.ShowCustomer = (req,res)=>{
    Customer.find({}).then(data=>{
       res.send(data)
    })
+}
+exports.GetCustomerbyId = (req,res)=>{
+  Customer.findById(req.user.user._id).then(data=>{
+    res.send(data)
+ })
 }

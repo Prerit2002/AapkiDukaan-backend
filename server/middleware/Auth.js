@@ -4,22 +4,12 @@ const passport = require("passport");
 const Customer = require("../model/customer");
 const Seller = require("../model/seller");
 const { SECRET } = require("../config");
-const { addExecutive } = require("../controller/executive");
+const Admin = require("../model/admin");
+const Executive = require("../model/executive");
 
 /**
  * @DESC To register the user (ADMIN, SUPER_ADMIN, USER)
  */
- function URLToArray(url) {
-  var request = {};
-  var pairs = url.substring(url.indexOf('?') + 1).split('&');
-  for (var i = 0; i < pairs.length; i++) {
-      if(!pairs[i])
-          continue;
-      var pair = pairs[i].split('=');
-      request[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1]);
-   }
-   return request;
-}
 
 const userRegister = async (req, res, next) => {
   
@@ -27,7 +17,6 @@ const userRegister = async (req, res, next) => {
   params=params[3]
   try {
     // Validate the username
-
     let usernameNotTaken = await validateUsername(req.body.Username,params);
     if (!usernameNotTaken) {
       return res.status(400).json({
@@ -35,7 +24,6 @@ const userRegister = async (req, res, next) => {
         success: false
       });
     }
-
     // // validate the email
     // let emailNotRegistered = await validateEmail(req.body.Email);
     // if (!emailNotRegistered) {
@@ -45,7 +33,6 @@ const userRegister = async (req, res, next) => {
     //   });
     // }
 
-
     // Get the hashed password
     const password = await bcrypt.hash(req.body.Password, 12);
     // create a new user
@@ -54,7 +41,7 @@ const userRegister = async (req, res, next) => {
 
   } catch (err) {
     // Implement logger function (winston)
-    console.log('hey')
+    console.log('Error')
     return res.status(500).json({
       message: "Unable to create your account.",
       success: false
@@ -73,13 +60,16 @@ const userLogin = async (req,res) => {
   let user;
   if(role==='Seller') {
      user = await Seller.findOne({ Username : Username, "WebsiteData.Domain" : req.body.Domain});
+     console.log(user)
   }
   else if(role==='Customer') {
      user = await Customer.findOne({ Username : Username });
   }
   else if(role==='Executive') {
     user = await Executive.findOne({ Username : Username });
- }
+ } else if(role==='Admin') {
+  user = await Admin.findOne({ Username : Username });
+}
   else {
     return;
   }
@@ -90,7 +80,6 @@ const userLogin = async (req,res) => {
       success: false
     });
   }
- 
   let isMatch = await bcrypt.compare(Password, user.Password);
   if (isMatch) {
     // Sign in the token and issue it to the user
@@ -99,15 +88,15 @@ const userLogin = async (req,res) => {
       {
         user_id: user._id,
         Username: user.Username,
-        Email: user.PersonalDetails.Email
+        role : role
       },
       process.env.SECRET,
       { expiresIn: "7 days" }
     );
 
     let result = {
+      id : user._id,
       username: user.Username,
-      email: user.PersonalDetails.Email,
       token: `Bearer ${token}`,
       expiresIn: 168
     };
@@ -135,7 +124,7 @@ const validateUsername = async (username,params) => {
     return user ? false : true;
   }
   else if(params==='Admin'){
-    let user = await Customer.findOne({ Username : username });
+    let user = await Admin.findOne({ Username : username });
     return user ? false : true;
   }
   else if(params==='Executive'){
@@ -146,15 +135,78 @@ const validateUsername = async (username,params) => {
     return false;
   }
 };
-
+const ChangePassword = async (req,res) => {
+  let params = req.params.role
+  console.log(params)
+  let newPass = await bcrypt.hash(req.body.Password, 12)
+  console.log(newPass)
+  if(params==='Seller') {
+    let user = await Seller.findOneAndUpdate({_id : req.params.id},{Password : newPass})
+    return user ? res.status(200).send('Done') : res.status(401).send('Failed');
+  }
+  else if(params==='Customer'){
+    let user = await Customer.findOneAndUpdate({_id : req.params.id},{Password : newPass});
+    return user ? res.status(200).send('Done') : res.status(401).send('Failed');
+  }
+  else if(params==='Admin'){
+    let user = await Admin.findOneAndUpdate({ _id : req.params.id },{Password : newPass});
+    return user ? res.status(200).send('Done') : res.status(401).send('Failed');
+  }
+  else if(params==='Executive'){
+    let user = await Executive.findOneAndUpdate({_id : req.params.id },{Password : newPass});
+    return user ? res.status(200).send('Done') : res.status(401).send('Failed');
+  }
+  else{
+    return res.send({message : "Invalid Request"});
+  }
+};
 /**
  * @DESC Passport middleware
  */
-const AuthC = passport.authenticate('Customer', { session: false });
-const AuthS = passport.authenticate('Seller',{session:false});
-const AuthA = passport.authenticate('Admin',{session:false});
-const AuthE = passport.authenticate('Executive',{session:false});
 
+const Auth  = (req,res,next) => { 
+  passport.authenticate("jwt", { session: false })(req,res,next) 
+}
+const AuthS = (req,res,next) => {
+  if(req.user.role==='Seller') {
+    next()
+  }
+  else{
+    res.status(401).send('Unauthorised')
+  }
+}
+const AuthC = (req,res,next) => {
+  if(req.user.role==='Customer') {
+    next()
+  }
+  else{
+    res.status(401).send('Unauthorised')
+  }
+}
+const AuthE = (req,res,next) => {
+  if(req.user.role==='Executive') {
+    next()
+  }
+  else{
+    res.status(401).send('Unauthorised')
+  }
+}
+const AuthA = (req,res,next) => {
+  if(req.user.role==='Admin') {
+    next()
+  }
+  else{
+    res.status(401).send('Unauthorised')
+  }
+}
+// const CheckRole = (req,res,next)=>{
+//   if(role===req.body.role) {
+//     next()
+//   } 
+//   else{
+//     res.status(401).send('Unauthorised')
+//   }
+// }
 
 /**
  * @DESC Check Role Middleware
@@ -234,14 +286,20 @@ const findusers = (req, res) => {
 };
 
 
+
+
 module.exports = {
-  AuthC,
+  Auth,
+  AuthA,
   AuthS,
+  AuthE,
+  AuthC,
   userLogin,
   userRegister,
   serializeUser,
   updateUser,
   GetUserData,
   deleteuser,
-  findusers
+  findusers,
+  ChangePassword
 };
