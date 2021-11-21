@@ -32,4 +32,5 @@ route.get("/api/getAllProducts/:id/",seller.GetProductsAll); //All Products of a
 route.put("/api/DeletePromo/:id",Auth.AuthS,seller.DeletePromo);//Deletes Promo Codes
 route.put("/api/DeleteProducts/:id",Auth.AuthS,seller.DeleteProducts);//Deletes Products 
 route.delete("/api/DeleteSeller/:id",Auth.AuthC,seller.DeleteSeller);//Deletes seller 
+route.post("/api/createExecutive",executive.createExecutive);
 module.exports = route;

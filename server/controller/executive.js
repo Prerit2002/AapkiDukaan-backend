@@ -5,11 +5,20 @@ exports.createExecutive= async  (req,res) => {
         if (!req.body){
             console.log("Executive Body")
         }
-    
+        
+        const personalDetails = {
+            Name: req.body.Name,
+            Address: req.body.Address,
+            PhoneNo: req.body.PhoneNo,
+            AadharNo: req.body.AadharNo,
+            Email: req.body.Email,
+            Occupation: req.body.Occupation
+        }
+
         const executive = new Executive({
-            personalDetails : req.body.personalDetails,
-            Leads : req.body.Leads,
-            PayOuts : req.body.PayOuts,
+            personalDetails : personalDetails,
+            Username :  req.body.Username,
+            Password : req.body.Password
           
            
         })
