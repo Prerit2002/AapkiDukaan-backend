@@ -23,7 +23,6 @@ module.exports = passportS  =>  {
             user : user,
             role : payload.role
         }
-        console.log(Article)
         return done(null, Article);
       }
       if(payload.role==='Seller') {

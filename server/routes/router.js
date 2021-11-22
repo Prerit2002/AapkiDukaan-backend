@@ -15,7 +15,7 @@ route.put("/api/CreatePromoCode/:id",Auth.Auth,Auth.AuthS,seller.CreatePromoCode
 route.post("/api/create/Seller", Auth.userRegister, seller.createSeller); // Creates User
 route.post("/api/create/Customer", Auth.userRegister, customer.createCustomer); //Creates Seller
 route.post("/api/create/Admin",Auth.userRegister,Admin.newAdmin);
-route.post("/api/create/Executive",Auth.userRegister,executive.createExecutive);
+route.post("/api/create/Executive",Auth.userRegister,executive.createExecutive); 
 route.post("/api/loginUser/:role",Auth.userLogin); //Login API for DB
 route.put("/api/createProduct",Auth.Auth,Auth.AuthS ,products.createProduct,seller.AddProducts); //Add Product to a single Seller & Product Pool
 route.get("/api/findSellerProducts/:id",seller.GetProducts); // Gets All products a Seller Sells
