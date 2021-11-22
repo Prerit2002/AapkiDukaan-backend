@@ -24,7 +24,7 @@ route.get("/api/findProduct/:id",Auth.Auth,Auth.AuthA,products.GetProducts); //F
 route.put("/api/addProduct",Auth.Auth,Auth.AuthS,seller.AddProducts); //Add Products for a single Seller
 route.put("/api/updateWebsite/:id",Auth.Auth,Auth.AuthS,seller.UpdateSetting); //Updates Website Settings of Seller's Website
 route.get("/api/showCustomer",Auth.Auth,Auth.AuthA,customer.ShowCustomer); //Fetches All Customers Registered
-route.get("/api/getCustomerbyToken",Auth.Auth,Auth.AuthC,customer.GetCustomerbyId); //Fetches Single Customer Data to him
+route.get("/api/getCustomerbyToken",Auth.Auth,customer.GetCustomerbyId); //Fetches Single Customer Data to him
 route.get("/api/showClient",Auth.Auth,Auth.AuthA,seller.ShowClient); //Fetches All registered Sellers
 route.get("/api/showProduct",Auth.Auth,Auth.AuthA,products.ShowProducts); //All Products Pool
 route.get("/api/getFullProduct/:id/:pid",seller.Fprod,products.Fprod); //Gets Complete Data for a Seller's Product
@@ -35,5 +35,6 @@ route.put("/api/DeletePromo/:id",Auth.Auth,Auth.AuthS,seller.DeletePromo);//Dele
 route.put("/api/DeleteProducts/:id",Auth.Auth,Auth.AuthS,seller.DeleteProducts);//Deletes Products 
 route.delete("/api/DeleteSeller/:id",Auth.Auth,Auth.AuthA,seller.DeleteSeller);//Deletes seller 
 route.put("/api/ChangePassword/:role/:id",Auth.ChangePassword);//Changes Password
+route.put("/api/PlaceOrder/",seller.recieveOrder);//Placed Order
 
 module.exports = route;

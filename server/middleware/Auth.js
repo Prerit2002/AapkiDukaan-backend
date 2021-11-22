@@ -199,6 +199,22 @@ const AuthA = (req,res,next) => {
     res.status(401).send('Unauthorised')
   }
 }
+const AuthAE = (req,res,next) => {
+  if(req.user.role==='Admin' || req.user.role==='Executive') {
+    next()
+  }
+  else{
+    res.status(401).send('Unauthorised')
+  }
+}
+const AuthSE = (req,res,next) => {
+  if(req.user.role==='Seller' || req.user.role==='Executive') {
+    next()
+  }
+  else{
+    res.status(401).send('Unauthorised')
+  }
+}
 // const CheckRole = (req,res,next)=>{
 //   if(role===req.body.role) {
 //     next()
@@ -294,6 +310,8 @@ module.exports = {
   AuthS,
   AuthE,
   AuthC,
+  AuthAE,
+  AuthSE,
   userLogin,
   userRegister,
   serializeUser,

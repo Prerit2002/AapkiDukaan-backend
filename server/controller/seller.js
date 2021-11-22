@@ -241,3 +241,24 @@ exports.CheckPromo = (req,res) =>{
         res.status(500).send(e)
     })
 }
+exports.recieveOrder = (req,res) => {
+    console.log(req.body)
+    let comm = parseInt(req.body.Total*0.05)
+    Seller.updateOne(
+        { _id: req.body.Sid },
+        { $addToSet: { Sales: {
+          Total : req.body.Total,
+          Category : req.body.Category,
+          Products : req.body.Products,
+          CustId : req.body.CustId,
+          Type : req.body.Type,
+          Commission : comm,
+          Date : new Date()
+        }} }
+       ).then((data)=>{
+            console.log('Success')
+            res.send(data)
+       }).catch(e=>{
+           console.log(e)
+       })
+}

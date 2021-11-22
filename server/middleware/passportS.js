@@ -45,6 +45,7 @@ module.exports = passportS  =>  {
       }
       else if(payload.role === 'Customer') {
           user = FindinCustomers
+          console.log(user)
           if(user) {
             send(user)
           }

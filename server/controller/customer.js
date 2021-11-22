@@ -31,6 +31,7 @@ exports.ShowCustomer = (req,res)=>{
    })
 }
 exports.GetCustomerbyId = (req,res)=>{
+  console.log('inside')
   Customer.findById(req.user.user._id).then(data=>{
     res.send(data)
  })
