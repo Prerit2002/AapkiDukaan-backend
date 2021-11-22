@@ -3,7 +3,6 @@ var Executive = require('../model/executive')
 exports.createExecutive= async  (req,res) => {
     try {
         if (!req.body){
-            console.log("Executive Body")
         }
         
         const personalDetails = {

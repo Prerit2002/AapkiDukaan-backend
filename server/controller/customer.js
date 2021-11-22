@@ -3,9 +3,7 @@ var Customer = require('../model/customer')
 exports.createCustomer = async  (req,res) => {
    try {
        if (!req.body){
-           console.log("body ")
        }
-       console.log(req.body)
        const Address={
          Street : req.body.Street,
          State : req.body.State,
@@ -20,7 +18,6 @@ exports.createCustomer = async  (req,res) => {
            Address : Address,
            Password : req.body.Password
        })
-       console.log(customer)
        await customer.save()
        res.status(200).send(customer)
 
@@ -34,6 +31,7 @@ exports.ShowCustomer = (req,res)=>{
    })
 }
 exports.GetCustomerbyId = (req,res)=>{
+  console.log('inside')
   Customer.findById(req.user.user._id).then(data=>{
     res.send(data)
  })

@@ -34,7 +34,6 @@ exports.createSeller = async  (req,res) => {
             Email : req.body.Email,
 
         })
-        console.log(seller)
         await seller.save()
         res.status(200).send(seller)
 
@@ -49,7 +48,6 @@ exports.Check = async(req,res) => {
 
 
 exports.findSellerbyDomain = (req,res) => {
-    console.log(req.body)
     Seller.findOne({'WebsiteData.Domain' : req.body.Domain})
     .then((data)=>{
         res.send({
@@ -63,7 +61,6 @@ exports.findSellerbyDomain = (req,res) => {
 }
 
 exports.AddProducts = (req,res)=>{
-    console.log(req.body)
     Seller.updateOne(
         { _id: req.body.id },
         { $addToSet: { Products: {
@@ -80,7 +77,6 @@ exports.AddProducts = (req,res)=>{
 }
 
 exports.DeleteProducts = (req,res)=>{
-    console.log(req.body)
     Seller.updateOne(
         { _id: req.params.id },
         { $pull: { Products: {
@@ -96,7 +92,6 @@ exports.DeleteProducts = (req,res)=>{
 
 
 exports.UpdateSetting = (req,res) =>{
-    console.log(req.params.id, req.body)
     Seller.updateOne({_id : req.params.id},{WebsiteData : req.body.WebsiteData}).then((data)=>{
         console.log('Success')
         res.send(data)
@@ -140,7 +135,6 @@ const ELprod = async (v) => Products.findOne({_id : v._id}).then((data)=>{
     res.send(Arr2)
   }
 exports.GetProductsbyCategory = async (req,res) =>{
-    console.log(req.body)
     Seller.findById(req.params.id).then(async (data)=>{
          data = data.Products.filter((el)=>{
             return (el.Category===req.body.Category)
@@ -223,12 +217,13 @@ exports.GetPromoCode = (req,res) =>{
 exports.CheckPromo = (req,res) =>{
     let Code=req.body.Code
     let Total=req.body.Total
+    console.log(Code,Total)
     let MaxDiscount;
     let Discount;
     let TotalPrice;
     let DiscountPrice;
     Seller.find( {_id:req.params.id}, { PromoCode : { $elemMatch: {  Code : Code } } } ).then((data)=>{
-     
+        
         Discount=data[0].PromoCode[0].Discount
         MaxDiscount=data[0].PromoCode[0].MaxDiscount
         DiscountPrice=(Total*Discount)/100
@@ -237,13 +232,33 @@ exports.CheckPromo = (req,res) =>{
         } else {
             TotalPrice=Total-MaxDiscount
         }
-
         res.send({
             NewTotal: TotalPrice,
-            Discount:(Total-TotalPrice)
+            Discount:(Total-TotalPrice),
         })
     }
     ).catch(e=>{
         res.status(500).send(e)
     })
+}
+exports.recieveOrder = (req,res) => {
+    console.log(req.body)
+    let comm = parseInt(req.body.Total*0.05)
+    Seller.updateOne(
+        { _id: req.body.Sid },
+        { $addToSet: { Sales: {
+          Total : req.body.Total,
+          Category : req.body.Category,
+          Products : req.body.Products,
+          CustId : req.body.CustId,
+          Type : req.body.Type,
+          Commission : comm,
+          Date : new Date()
+        }} }
+       ).then((data)=>{
+            console.log('Success')
+            res.send(data)
+       }).catch(e=>{
+           console.log(e)
+       })
 }

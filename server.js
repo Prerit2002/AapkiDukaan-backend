@@ -11,6 +11,7 @@ const uploads = require('./server/middleware/Uploads/')
 app.use(cors());
 app.use(express.json());
 app.use(morgan('tiny'));
+app.disable('etag');
 app.use(passport.initialize());
 app.use(passport.session());
 require("./server/middleware/passportS")(passport);

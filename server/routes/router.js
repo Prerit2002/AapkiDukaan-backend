@@ -15,7 +15,7 @@ route.put("/api/CreatePromoCode/:id",Auth.Auth,Auth.AuthS,seller.CreatePromoCode
 route.post("/api/create/Seller", Auth.userRegister, seller.createSeller); // Creates User
 route.post("/api/create/Customer", Auth.userRegister, customer.createCustomer); //Creates Seller
 route.post("/api/create/Admin",Auth.userRegister,Admin.newAdmin);
-route.post("/api/create/Executive",Auth.userRegister,executive.createExecutive);
+route.post("/api/create/Executive",Auth.userRegister,executive.createExecutive); 
 route.post("/api/loginUser/:role",Auth.userLogin); //Login API for DB
 route.put("/api/createProduct",Auth.Auth,Auth.AuthS ,products.createProduct,seller.AddProducts); //Add Product to a single Seller & Product Pool
 route.get("/api/findSellerProducts/:id",seller.GetProducts); // Gets All products a Seller Sells
@@ -24,9 +24,10 @@ route.get("/api/findProduct/:id",Auth.Auth,Auth.AuthA,products.GetProducts); //F
 route.put("/api/addProduct",Auth.Auth,Auth.AuthS,seller.AddProducts); //Add Products for a single Seller
 route.put("/api/updateWebsite/:id",Auth.Auth,Auth.AuthS,seller.UpdateSetting); //Updates Website Settings of Seller's Website
 route.get("/api/showCustomer",Auth.Auth,Auth.AuthA,customer.ShowCustomer); //Fetches All Customers Registered
-route.get("/api/getCustomerbyToken",Auth.Auth,Auth.AuthC,customer.GetCustomerbyId); //Fetches Single Customer Data to him
-route.get("/api/showClient",Auth.Auth,Auth.AuthA,seller.ShowClient); //Fetches All registered Sellers
-route.get("/api/showProduct",Auth.Auth,Auth.AuthA,products.ShowProducts); //All Products Pool
+route.get("/api/getCustomerbyToken",Auth.Auth,customer.GetCustomerbyId); //Fetches Single Customer Data to him
+route.get("/api/showClient",Auth.Auth,Auth.AuthAE,seller.ShowClient); //Fetches All registered Sellers
+route.get("/api/showProduct",Auth.Auth,Auth.AuthAE,products.ShowProducts); //All Products Pool
+
 route.get("/api/getFullProduct/:id/:pid",seller.Fprod,products.Fprod); //Gets Complete Data for a Seller's Product
 route.get("/api/GetPromoCode/:id",Auth.Auth,Auth.AuthS,seller.GetPromoCode); //Fetched all Promocodes for a single Seller
 route.put("/api/checkpromo/:id",seller.CheckPromo); //Validates PromoCode & Calculates Discount
@@ -37,4 +38,6 @@ route.delete("/api/DeleteSeller/:id",Auth.Auth,Auth.AuthA,seller.DeleteSeller);/
 route.put("/api/ChangePassword/:role/:id",Auth.ChangePassword);//Changes Password
 route.get("/api/GetExecutive",Auth.Auth,Auth.AuthA,executive.GetExecutive); //Get Executives
 route.delete("/api/DeleteExecutive/:id",Auth.Auth,Auth.AuthA,executive.DeleteExecutive);//Deletes executive 
+route.put("/api/PlaceOrder/",seller.recieveOrder);//Placed Order
+
 module.exports = route;

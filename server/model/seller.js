@@ -103,23 +103,22 @@ const WebsiteData = new Mongoose.Schema({
 
 
 const Sales = new Mongoose.Schema({
-  ProdId: {
+  Products : [{
     type: Mongoose.Schema.Types.ObjectId,
     required: true,
     ref: "Products",
-  },
+  }],
   CustId: {
     type: Mongoose.Schema.Types.ObjectId,
     required: true,
     ref: "Customers",
   },
-  Price: {
+  Total: {
     type: Number,
     required: true,
   },
   Type: {
     type: String,
-    required: true,
   },
   Date: {
     type: Date,
