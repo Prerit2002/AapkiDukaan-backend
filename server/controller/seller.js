@@ -1,5 +1,6 @@
 var Seller = require('../model/seller')
 var Products = require('../model/products')
+const mongoose = require("mongoose");
 
 exports.createSeller = async  (req,res) => {
     try {
@@ -241,12 +242,13 @@ exports.CheckPromo = (req,res) =>{
         res.status(500).send(e)
     })
 }
-exports.recieveOrder = (req,res) => {
+exports.recieveOrder = (req,res,next) => {
     console.log(req.body)
     let comm = parseInt(req.body.Total*0.05)
     Seller.updateOne(
         { _id: req.body.Sid },
         { $addToSet: { Sales: {
+          _id: new mongoose.Types.ObjectId(),
           Total : req.body.Total,
           Category : req.body.Category,
           Products : req.body.Products,
@@ -256,9 +258,15 @@ exports.recieveOrder = (req,res) => {
           Date : new Date()
         }} }
        ).then((data)=>{
-            console.log('Success')
-            res.send(data)
+            req.body["OrderId"] = data._id;
+            next()
        }).catch(e=>{
            console.log(e)
        })
 }
+
+exports.GetSales = async (req,res) =>{
+    Seller.findOne({_id : req.params.id}).then((data)=>{
+            res.send(data.Sales)
+        })
+    }
