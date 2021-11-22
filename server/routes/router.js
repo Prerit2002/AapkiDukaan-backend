@@ -35,5 +35,6 @@ route.put("/api/DeletePromo/:id",Auth.Auth,Auth.AuthS,seller.DeletePromo);//Dele
 route.put("/api/DeleteProducts/:id",Auth.Auth,Auth.AuthS,seller.DeleteProducts);//Deletes Products 
 route.delete("/api/DeleteSeller/:id",Auth.Auth,Auth.AuthA,seller.DeleteSeller);//Deletes seller 
 route.put("/api/ChangePassword/:role/:id",Auth.ChangePassword);//Changes Password
-
+route.get("/api/GetExecutive",Auth.Auth,Auth.AuthA,executive.GetExecutive); //Get Executives
+route.delete("/api/DeleteExecutive/:id",Auth.Auth,Auth.AuthA,executive.DeleteExecutive);//Deletes executive 
 module.exports = route;

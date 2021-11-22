@@ -31,44 +31,44 @@ const personalDetails = new mongoose.Schema({
    
 })
 
-const Leads = new mongoose.Schema({
-    SellerId:  {  
-        type : mongoose.Schema.Types.ObjectId,
-        required : true,
-        ref : 'Seller'
-    },
-    DOJ : {
-        type: Date,
-        required: true
-    }
-})
+// const Leads = new mongoose.Schema({
+//     SellerId:  {  
+//         type : mongoose.Schema.Types.ObjectId,
+//         required : true,
+//         ref : 'Seller'
+//     },
+//     DOJ : {
+//         type: Date,
+//         required: true
+//     }
+// })
 
-const PayOuts = new mongoose.Schema({
-    StartDate : {
-        type: Date,
-        required: true
-    },
-    EndDate : {
-        type: Date,
-        required: true
-    },
-    SellerBillId : [
-    {
-        type : mongoose.Schema.Types.ObjectId,
-        required : true,
-        ref : 'Seller'
-    }],
-    Payout : {
-        type: Number,
-        required: true,
-        default : 0
-    }
-})
+// const PayOuts = new mongoose.Schema({
+//     StartDate : {
+//         type: Date,
+//         required: true
+//     },
+//     EndDate : {
+//         type: Date,
+//         required: true
+//     },
+//     SellerBillId : [
+//     {
+//         type : mongoose.Schema.Types.ObjectId,
+//         required : true,
+//         ref : 'Seller'
+//     }],
+//     Payout : {
+//         type: Number,
+//         required: true,
+//         default : 0
+//     }
+// })
 
 
 const ExecutiveSchema = new mongoose.Schema({
-    PayOuts : [PayOuts],
-    Leads: [Leads],
+    // PayOuts : [PayOuts],
+    // Leads: [Leads],
     personalDetails : personalDetails,
     Username : {
         type: String,
@@ -78,10 +78,10 @@ const ExecutiveSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    Email : {
-        type: String,
-        required: true
-    },
+    // Email : {
+    //     type: String,
+    //     required: true
+    // },
   
   
 
